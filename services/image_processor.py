@@ -2,25 +2,19 @@ import easyocr
 import numpy as np
 from PIL import Image
 
-# Initialize the reader once to keep execution fast
-reader = easyocr.Reader(['en'], gpu=False)
-
 def extract_image_text(image_file):
-    """
-    Extracts text from uploaded images or hand-drawn sketches.
-    Accepts a Streamlit UploadedFile object.
-    """
     try:
-        # Convert Streamlit file upload to PIL Image, then to a numpy array for EasyOCR
-        img = Image.open(image_file)
-        img_np = np.array(img)
+        # Convert uploaded file to OpenCV/Numpy format
+        image = Image.open(image_file)
+        img_np = np.array(image)
         
-        # Read text sequences from the image
-        results = reader.readtext(img_np, detail=0)
+        # Initialize the reader inside the function (Lazy Loading)
+        # This keeps the app from hanging during deployment boot!
+        reader = easyocr.Reader(['en'], gpu=False)
         
-        # Join extracted sentences with line breaks
-        extracted_text = "\n".join(results)
-        return extracted_text
+        results = reader.readtext(img_np)
+        extracted_text = " ".join([res[1] for res in results])
         
+        return extracted_text if extracted_text.strip() else "Error: No text detected in image."
     except Exception as e:
-        return f"Error parsing image files: {str(e)}"
+        return f"Error processing image text: {str(e)}"
