@@ -1,0 +1,15 @@
+streamlit
+google-genai
+python-dotenv
+pypdf
+easyocr
+moviepy==1.0.3
+decorator==4.4.2
+SpeechRecognition==3.10.0
+beautifulsoup4
+requests
+gTTS
+sentence-transformers
+faiss-cpu
+numpy
+pillow
